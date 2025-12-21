@@ -39,7 +39,7 @@ const CoursesPage = () => {
                             </CardContent>
                         </Link>
 
-                        <CardFooter className="flex justify-between items-center">
+                        <CardFooter className="flex justify-between items-center mt-auto">
                             <Badge variant="default" className="text-lg px-3 py-1">
                                 ${course.price.toFixed(2)}
                             </Badge>
