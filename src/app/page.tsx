@@ -9,6 +9,7 @@ import {useQuery} from "convex/react";
 import {ArrowRight, Loader2} from "lucide-react";
 import {SignedIn, SignedOut, SignInButton} from "@clerk/nextjs";
 import {Button} from "@/components/ui/button";
+import PurchaseButton from "@/components/PurchaseButton";
 
 export default function Home() {
     const courses = useQuery(api.courses.getCourses);
@@ -52,7 +53,7 @@ export default function Home() {
                               </Badge>
 
                           <SignedIn>
-                              Enroll
+                              <PurchaseButton courseId={course._id}/>
                           </SignedIn>
 
                           <SignedOut>
