@@ -7,6 +7,7 @@ import {api} from "../../convex/_generated/api";
 import {Button} from "@/components/ui/button";
 import {Loader2Icon} from "lucide-react";
 import {useState} from "react";
+import {toast} from "sonner";
 
 const PurchaseButton = ({courseId}: {courseId: Id<"courses">}) => {
     const { user } = useUser()
@@ -29,8 +30,12 @@ const PurchaseButton = ({courseId}: {courseId: Id<"courses">}) => {
             } else {
                 throw new Error("Failed to create checkout session")
             }
-        } catch (error) {
-            // todo: handle error here
+        } catch (error: any) {
+            if (error.message.includes("Rate limit exceeded")) {
+                toast.error("You've tried too many times. Please try again later.")
+            } else {
+                toast.error(error.message || "Something went wrong. Please try again later.")
+            }
             console.log(error);
 
         } finally {
