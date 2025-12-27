@@ -21,25 +21,38 @@ const PurchaseButton = ({courseId}: {courseId: Id<"courses">}) => {
     } : "skip") || {hasAccess: false};
 
     const handlePurchase = async () => {
-        if (!user) alert("please log in to purchase")
-        setIsLoading(true)
+        if (!user) {
+            toast.error("Please log in to purchase", {id: "login-error"});
+            return;
+        }
+        setIsLoading(true);
         try {
-           const { checkoutUrl } = await createCheckoutSession({courseId})
+            const { checkoutUrl } = await createCheckoutSession({courseId});
             if (checkoutUrl) {
-                window.location.href = checkoutUrl
+                window.location.href = checkoutUrl;
             } else {
-                throw new Error("Failed to create checkout session")
+                throw new Error("Failed to create checkout session");
             }
         } catch (error: any) {
-            if (error.message.includes("Rate limit exceeded")) {
-                toast.error("You've tried too many times. Please try again later.")
+            // Handle ConvexError specifically
+            const errorMessage = error.data?.message || 
+                               error.message || 
+                               "Something went wrong. Please try again later.";
+            
+            if (errorMessage.includes("Rate limit")) {
+                toast.error("You've tried too many times. Please try again later.");
+            } else if (errorMessage.includes("Unauthorized")) {
+                toast.error("Please log in to make a purchase");
+            } else if (errorMessage.includes("User not found")) {
+                toast.error("User account not found. Please log out and try again.");
+            } else if (errorMessage.includes("Course not found")) {
+                toast.error("Course not found. Please refresh the page and try again.");
             } else {
-                toast.error(error.message || "Something went wrong. Please try again later.")
+                toast.error(errorMessage);
             }
-            console.log(error);
-
+            console.error("Purchase error:", error);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 

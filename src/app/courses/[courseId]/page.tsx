@@ -47,13 +47,13 @@ const CourseDetailPage = ({params}:{params:{courseId:Id<"courses">}}) => {
 
                     {userAccess.hasAccess ? (
                         <>
-                            <p>{courseData.description}</p>
+                            <p className="text-gray-600 mb-6">{courseData.description}</p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                                 <Button className="flex items-center justify-center space-x-2">
                                     <PlayCircle className="size-5"/>
                                     <span>Start Course</span>
                                 </Button>
-                                <Button className="flex items-center justify-center space-x-2">
+                                <Button variant="outline" className="flex items-center justify-center space-x-2">
                                     <Download className="size-5"/>
                                     <span>Download Materials</span>
                                 </Button>
