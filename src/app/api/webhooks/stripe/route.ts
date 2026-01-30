@@ -3,6 +3,9 @@ import stripe from "@/lib/stripe";
 import { ConvexHttpClient } from "convex/browser";
 import {api} from "../../../../../convex/_generated/api";
 import {Id} from "../../../../../convex/_generated/dataModel";
+import resend from "@/lib/resend";
+import PurchaseConfirmationEmail from "@/emails/PurchaseConfirmationEmail";
+import ProPlanActivatedEmail from "@/emails/ProPlanActivatedEmail";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!)
 
@@ -74,7 +77,23 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 			amount: session.amount_total || 0,
 			stripePurchaseId: session.id,
 		});
-		console.log(`Successfully recorded purchase ${session.id} for user ${user._id}`);
+
+
+		if (session.metadata && session.metadata.courseTitle && session.metadata.courseImageUrl &&
+			process.env.NODE_ENV === "development") {
+			await resend.emails.send({
+				from: "MasterClass <onboarding@resend.dev>",
+				to: user.email,
+				subject: "Purchase Confirmed!",
+				react: PurchaseConfirmationEmail({
+					customerName: user.name,
+					courseTitle: session.metadata?.courseTitle,
+					courseImage: session.metadata?.courseImageUrl,
+					courseUrl: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${courseId}`,
+					purchaseAmount: session.amount_total! / 100
+				})
+			})
+		}
 	} catch (error) {
 		console.error('Error recording purchase:', error);
 		throw error;
@@ -159,6 +178,22 @@ async function handleSubscriptionUpsert(subscription: Stripe.Subscription, event
 			cancelAtPeriodEnd: subscription.cancel_at_period_end || false,
 		};
 
+		const isCreation = eventType === "customer.subscription.created";
+
+		if (isCreation && process.env.NODE_ENV === "development") {
+			await resend.emails.send({
+				from: "MasterClass <onboarding@resend.dev>",
+				to: user.email,
+				subject: "Welcome to MasterClass Pro!",
+				react: ProPlanActivatedEmail({
+					name: user.name,
+					planType: subscription.items.data[0].plan.interval,
+					currentPeriodStart: subscription.current_period_start,
+					currentPeriodEnd: subscription.current_period_end,
+					url: process.env.NEXT_PUBLIC_APP_URL!
+				})
+			})
+		}
 		console.log('Saving subscription with params:', subscriptionParams);
 
 		const result = await convex.mutation(api.subscriptions.upsertSubscription, subscriptionParams);
