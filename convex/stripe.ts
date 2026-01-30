@@ -2,7 +2,6 @@ import { ConvexError, v } from "convex/values";
 import { action } from "./_generated/server";
 import { api } from "./_generated/api";
 import stripe from "../src/lib/stripe";
-import ratelimit from "../src/lib/ratelimit";
 
 export const createCheckoutSession = action({
 	args: { courseId: v.id("courses") },
@@ -20,15 +19,6 @@ export const createCheckoutSession = action({
 		if (!user) {
 			throw new ConvexError("User not found");
 		}
-
-		const rateLimitKey = `checkout-rate-limit:${user._id}`;
-		const { success } = await ratelimit.limit(rateLimitKey);
-
-		if (!success) {
-			throw new Error(`Rate limit exceeded.`);
-		}
-
-
 
 		const course = await ctx.runQuery(api.courses.getCourseById, {
 			courseId: args.courseId,
@@ -81,13 +71,6 @@ export const createProPlanCheckoutSession = action({
 		const user = await ctx.runQuery(api.users.getUserByClerkId, { clerkId: identity.subject });
 		if (!user) {
 			throw new ConvexError("User not found");
-		}
-
-		// rate limit
-		const rateLimitKey = `pro-plan-rate-limit:${user._id}`;
-		const { success } = await ratelimit.limit(rateLimitKey);
-		if (!success) {
-			throw new Error(`Rate limit exceeded.`);
 		}
 
 		let priceId;

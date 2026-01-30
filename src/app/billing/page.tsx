@@ -33,8 +33,8 @@ const BillingPage = () => {
 	};
 
 	const formatDate = (timestamp: number): string => {
-		// Convert Unix timestamp (seconds) to milliseconds
-		const date = new Date(timestamp * 1000);
+		// Stripe timestamps are already in milliseconds
+		const date = new Date(timestamp);
 
 		// Format options for consistent date display
 		const options: Intl.DateTimeFormatOptions = {
