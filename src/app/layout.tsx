@@ -4,7 +4,7 @@ import "./globals.css";
 import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
-import Footer from "@/components/ui/Footer";
+import Footer from "@/components/Footer";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",

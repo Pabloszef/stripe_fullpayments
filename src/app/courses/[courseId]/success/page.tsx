@@ -8,7 +8,8 @@ const page = ({ params, searchParams }: { params: { courseId: string }; searchPa
 	const { session_id } = searchParams;
 
 	return (
-		<div className='container mx-auto py-12 px-4'>
+		<div className='flex flex-col min-h-screen'>
+			<div className='flex-grow container mx-auto py-12 px-4'>
 			<Card className='max-w-2xl mx-auto'>
 				<CardHeader className='text-center'>
 					<CheckCircle className='size-16 text-green-500 mx-auto mb-4' />
@@ -35,6 +36,7 @@ const page = ({ params, searchParams }: { params: { courseId: string }; searchPa
 					</div>
 				</CardContent>
 			</Card>
+			</div>
 		</div>
 	);
 };

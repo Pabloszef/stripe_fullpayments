@@ -27,7 +27,8 @@ const SuccessPage = () => {
 			];
 
 	return (
-		<div className='container mx-auto px-4 py-8 md:py-16 max-w-4xl h-screen'>
+		<div className='flex flex-col min-h-screen'>
+			<div className='flex-grow container mx-auto px-4 py-8 md:py-16 max-w-4xl'>
 			<Card className='w-full overflow-hidden'>
 				<div
 					className={`w-full h-2 ${isYearly ? "bg-gradient-to-r from-purple-500 to-pink-500" : "bg-blue-500"}`}
@@ -75,6 +76,7 @@ const SuccessPage = () => {
 					</p>
 				</CardFooter>
 			</Card>
+			</div>
 		</div>
 	);
 };

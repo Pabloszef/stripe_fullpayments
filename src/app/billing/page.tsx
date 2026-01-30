@@ -55,7 +55,8 @@ const BillingPage = () => {
 	}
 
 	return (
-		<div className='container mx-auto py-12 px-4 max-w-4xl '>
+		<div className='flex flex-col min-h-screen'>
+			<div className='flex-grow container mx-auto py-12 px-4 max-w-4xl'>
 			<h1 className='text-4xl font-bold mb-8 text-center text-gray-800'>Billing Management</h1>
 			<Card className='w-full shadow-lg border-0 overflow-hidden'>
 				{subscription ? (
@@ -145,6 +146,7 @@ const BillingPage = () => {
 					</>
 				)}
 			</Card>
+			</div>
 		</div>
 	);
 };
